@@ -3,106 +3,62 @@ package com.example.mad_pra_exam_1
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 @Composable
 fun EventDetailsScreen() {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("EventEase") },
-                navigationIcon = {
-                    IconButton(onClick = { /* Handle back button */ }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { /* Handle share action */ }) {
-                        Icon(imageVector = Icons.Default.Share, contentDescription = "Share")
-                    }
-                }
-            )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            // Event Header
-            EventHeader(
-                title = "Tech Conference 2024",
-                location = "Mehsana, Gujarat | 2.5 km away",
-                description = "This is a detailed description of the event..."
-            )
+    Column(modifier = Modifier.fillMaxSize()) {
+        EventHeader(title = "Tech Conference 2024", location = "Mehsana, Gujarat | 2.5 km away",
+            description ="This is a detailed description of the event..." )
 
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Event Schedule
-            EventSchedule()
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Reviews Section
-            ReviewsSection()
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Bottom Buttons
-            ActionButtons()
-        }
+        EventSchedule()
+        ReviewsSection()
+        ActionButtons()
     }
 }
 
 @Composable
 fun EventHeader(title: String, location: String, description: String) {
     Column {
-        // Event Image
-        Box {
-            Image(
-                painter = painterResource(id = R.drawable.event), // Replace 'event' with your image name
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(250.dp),
-                contentScale = ContentScale.Crop
-            )
-            IconButton(
-                onClick = { /* Handle share */ },
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(16.dp)
-            ) {
-                Icon(imageVector = Icons.Default.Share, contentDescription = "Share", tint = MaterialTheme.colorScheme.onPrimary)
-            }
-        }
-
+        // Event Header Image
+        Image(
+            painter = painterResource(id = R.drawable.event), // Your image here
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp),
+            contentScale = ContentScale.Crop
+        )
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Event Title, Location, and Description
+        // Event Title
         Text(
             text = title,
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
+
+        // Event Location
         Text(
             text = location,
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
+
+        // Event Description
         Text(
             text = description,
             style = MaterialTheme.typography.bodySmall,
@@ -114,29 +70,45 @@ fun EventHeader(title: String, location: String, description: String) {
 @Composable
 fun EventSchedule() {
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(
-            text = "Event Schedule",
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            val scheduleList = listOf("10:00 AM\nKeynote Speech", "11:30 AM\nNetworking Session")
-            items(scheduleList.size) { index ->
-                Card(
-                    shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier
-                        .height(80.dp)
-                        .width(120.dp)
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Text(
-                            text = scheduleList[index],
-                            style = MaterialTheme.typography.bodySmall,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
+        Text("Event Schedule", style = MaterialTheme.typography.titleMedium)
+
+        // Schedule items
+        LazyRow(modifier = Modifier.fillMaxWidth()) {
+            items(listOf(
+                "10:00 AM - Opening Ceremony",
+                "10:30 AM - Keynote Speech",
+                "11:30 AM - Networking Session"
+            )) { event ->
+                EventScheduleCard(event)
             }
+        }
+    }
+}
+
+
+@Composable
+fun EventScheduleCard(event: String) {
+    Card(
+        modifier = Modifier
+            .padding(end = 8.dp)
+            .width(160.dp),
+        shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp) // Material3 elevation
+    )  {
+        Column(
+            modifier = Modifier.padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = event.split(" - ")[0], // Time
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+            Text(
+                text = event.split(" - ")[1], // Event name
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
@@ -144,37 +116,32 @@ fun EventSchedule() {
 @Composable
 fun ReviewsSection() {
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(
-            text = "Reviews",
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        val reviews = listOf(
-            "Alice Johnson" to "Great event! Well-organized and informative.",
-            "Bob Smith" to "Really enjoyed the keynote speaker. Would recommend!",
-            "Charlie Davis" to "Good event overall, but some sessions were too short."
-        )
-        reviews.forEach { (name, review) ->
-            Card(
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp)
-            ) {
-                Row(modifier = Modifier.padding(8.dp)) {
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(MaterialTheme.shapes.small)
-                            .background(MaterialTheme.colorScheme.primary)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Column {
-                        Text(text = name, style = MaterialTheme.typography.titleSmall)
-                        Text(text = review, style = MaterialTheme.typography.bodySmall)
-                    }
-                }
+        Text("Reviews", style = MaterialTheme.typography.titleMedium)
+
+        // Example reviews
+        ReviewCard("Alice Johnson", "Great event! Well-organized and informative.", 5)
+        ReviewCard("Bob Smith", "Really enjoyed the keynote speaker. Would recommend!", 4)
+        ReviewCard("Charlie Davis", "Good event overall, but some sessions were too short.", 4)
+    }
+}
+
+@Composable
+fun ReviewCard(name: String, review: String, rating: Int) {
+    Card(modifier = Modifier.padding(vertical = 8.dp)) {
+        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            // User icon (replace with actual image or icon)
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = null,
+                modifier = Modifier.size(40.dp)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(name, style = MaterialTheme.typography.bodyMedium)
+                Text(review, style = MaterialTheme.typography.bodySmall)
             }
+            // Rating (stars)
+            Text("★".repeat(rating), style = MaterialTheme.typography.bodyMedium)
         }
     }
 }
@@ -182,16 +149,16 @@ fun ReviewsSection() {
 @Composable
 fun ActionButtons() {
     Row(
-        horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Button(onClick = { /* Handle Buy Tickets */ }) {
-            Text(text = "Buy Tickets")
+        Button(onClick = { /* Action for Buy Tickets */ }, modifier = Modifier.weight(1f)) {
+            Text("Buy Tickets")
         }
-        Button(onClick = { /* Handle Add to Calendar */ }) {
-            Text(text = "Add to Calendar")
+        Button(onClick = { /* Action for Add to Calendar */ }, modifier = Modifier.weight(1f)) {
+            Text("Add to Calendar")
         }
     }
 }

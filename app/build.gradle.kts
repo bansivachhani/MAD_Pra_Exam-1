@@ -60,6 +60,15 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation ("androidx.compose.material:material:1.6.0")
+    implementation ("androidx.compose.material3:material3:1.2.0-alpha09")
+    // Compose BOM
+    implementation ("androidx.compose:compose-bom:2024.01.00")
+
+// Core Compose libraries
+    implementation ("androidx.compose.ui:ui")
+    implementation ("androidx.compose.ui:ui-tooling-preview")
+    implementation ("androidx.compose.runtime:runtime")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
